@@ -1,0 +1,44 @@
+const token = "5087697422:AAGoMEjDR4KxCTFhzn27mYYjl1ysQnOEwHg";
+function timer() {
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheets()[0];
+ // let ws = ss.getSheetByName("SendToTelegram");
+  let data = sheet.getRange(2,1, (sheet.getLastRow()-1), 5).getValues();
+ 
+  let newdata = new Date();
+  var curentTime = newdata.getDate() + "." + (newdata.getMonth()  + 1);
+
+   //console.log(curentTime)
+  for (i = 0; i < (sheet.getLastRow()-1); i++) {
+    let dataInfo = data[i];
+    console.log(dataInfo)
+    let clientName = dataInfo[0];
+ console.log(dataInfo[0])
+ 
+    let clientBirthday  = dataInfo[3];
+    let clientIdChat = dataInfo[4];
+    if (dataInfo[3] !== ""){
+      clientBirthday = (dataInfo[3].getDate()+1) + "." + (dataInfo[3].getMonth() + 1) ;
+      
+    }
+    if (clientBirthday === curentTime){
+      if (clientIdChat !== ""){
+        sendText(clientIdChat, "  " + clientName + ",  вітаємо Вас с Днем Нарождення!!!🎂");
+      }
+    }
+  }
+//console.log(curentTime)
+}
+ function sendText(chatId, text, keyBoard) {
+  let data = {
+    method: 'post',
+    payload: {
+      method: 'sendMessage',
+      chat_id: String(chatId),
+      text: text,
+      parse_mode: 'HTML',
+      reply_markup: JSON.stringify(keyBoard)
+    }
+  }
+  UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/', data);
+}
